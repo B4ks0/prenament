@@ -84,7 +84,7 @@
 
 ## 3. Arsitektur & Tech Stack
 
-![Architecture Diagram](architecture.png)
+<img src="architecture.png" width="500">
 
 **Backend:** Django 4.2, Python 3.11
 **Database:** SQLite (development) / MySQL 8.4 (production via Laragon)
