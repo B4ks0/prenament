@@ -84,29 +84,7 @@
 
 ## 3. Arsitektur & Tech Stack
 
-```
-+-------------------------------------------------------------+
-|                     Browser (Mobile Web)                     |
-|              Layout: 390px portrait, PWA-ready               |
-+---------------------+---------------------------------------+
-                      | HTTP
-+---------------------v---------------------------------------+
-|                  Django 4.2 (Python 3.11)                    |
-|  +----------+ +----------+ +----------+ +--------------+    |
-|  | accounts | |   ibu    | |  kader   | |   petugas    |    |
-|  |  (auth)  | | (7 view) | | (7 view) | |  (6 view)    |    |
-|  +----------+ +----------+ +----------+ +--------------+    |
-|                  Django Template Engine                       |
-|              Static: prenament.css + prenament.js            |
-+---------------------+---------------------------------------+
-                      |
-       +--------------+--------------+
-       |                             |
-+------v------+             +--------v-------+
-|   SQLite    |             |   MySQL 8.4    |
-| (dev/QA)    |             |  (production)  |
-+-------------+             +----------------+
-```
+![Architecture Diagram](architecture.png)
 
 **Backend:** Django 4.2, Python 3.11
 **Database:** SQLite (development) / MySQL 8.4 (production via Laragon)
