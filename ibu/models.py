@@ -19,6 +19,7 @@ class ArtikelEdukasi(models.Model):
     ringkasan = models.TextField(blank=True)
     konten = models.TextField()
     kategori = models.CharField(max_length=20, choices=KATEGORI_CHOICES, default='umum')
+    gambar = models.ImageField(upload_to='artikel/', blank=True, null=True)
     penulis = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='artikel_edukasi')
     diterbitkan = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)

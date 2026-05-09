@@ -120,7 +120,11 @@ def edukasi(request):
         articles = [a for a in articles if a.kategori == kategori]
     kategori_list = ArtikelEdukasi.KATEGORI_CHOICES
     articles_json = json.dumps(
-        {str(a.pk): {'judul': a.judul, 'konten': a.konten} for a in articles},
+        {str(a.pk): {
+            'judul': a.judul,
+            'konten': a.konten,
+            'gambar': a.gambar.url if a.gambar else '',
+        } for a in articles},
         ensure_ascii=False,
     )
     return render(request, 'ibu/edukasi.html', {

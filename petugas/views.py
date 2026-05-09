@@ -138,11 +138,12 @@ def artikel_create(request):
         konten = request.POST.get('konten', '').strip()
         kategori = request.POST.get('kategori', 'umum')
         diterbitkan = request.POST.get('diterbitkan') == '1'
+        gambar = request.FILES.get('gambar')
         if judul and konten:
             ArtikelEdukasi.objects.create(
                 judul=judul, ringkasan=ringkasan, konten=konten,
                 kategori=kategori, diterbitkan=diterbitkan,
-                penulis=request.user,
+                penulis=request.user, gambar=gambar,
             )
             messages.success(request, 'Artikel berhasil ditambahkan.')
             return redirect('petugas:artikel_list')
@@ -163,6 +164,14 @@ def artikel_edit(request, pk):
         artikel.konten = request.POST.get('konten', artikel.konten).strip()
         artikel.kategori = request.POST.get('kategori', artikel.kategori)
         artikel.diterbitkan = request.POST.get('diterbitkan') == '1'
+        if request.POST.get('hapus_gambar') == '1':
+            if artikel.gambar:
+                artikel.gambar.delete(save=False)
+            artikel.gambar = None
+        elif request.FILES.get('gambar'):
+            if artikel.gambar:
+                artikel.gambar.delete(save=False)
+            artikel.gambar = request.FILES['gambar']
         artikel.save()
         messages.success(request, 'Artikel berhasil diperbarui.')
         return redirect('petugas:artikel_list')
