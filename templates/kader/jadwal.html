@@ -1,0 +1,134 @@
+﻿{% extends "base.html" %}
+{% load static %}
+{% block title %}Jadwal Kegiatan - PRENAMENT{% endblock %}
+
+{% block header_avatar %}
+<div class="avatar avatar-md" style="background:oklch(0.85 0.06 230);color:oklch(0.35 0.08 230);">
+  {{ request.user.nama_lengkap|default:request.user.username|slice:":2"|upper }}
+</div>
+{% endblock %}
+{% block header_name %}{{ request.user.nama_lengkap|default:request.user.username }}{% endblock %}
+{% block header_role %}Kader Posyandu{% endblock %}
+{% block header_action %}
+<a href="{% url 'logout' %}" style="width:36px;height:36px;border-radius:8px;background:transparent;border:none;cursor:pointer;color:var(--muted);display:flex;align-items:center;justify-content:center;text-decoration:none;">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+</a>
+{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="page-title-info">
+    <h1>Jadwal Kegiatan</h1>
+    <div class="subtitle">Kelola jadwal kegiatan Posyandu dan kirim notifikasi.</div>
+  </div>
+  <button onclick="document.getElementById('modal-buat').style.display='flex'"
+    class="btn btn-primary btn-sm" style="flex-shrink:0;">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    Buat
+  </button>
+</div>
+
+<div style="padding:8px 16px 16px;">
+  {% if messages %}
+  {% for msg in messages %}
+  <div style="background:var(--green-soft);color:#065f46;padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;">{{ msg }}</div>
+  {% endfor %}
+  {% endif %}
+
+  <div class="card card-p18">
+    <div style="font-size:18px;font-weight:700;color:var(--ink);">Daftar Jadwal Kegiatan</div>
+    <div style="font-size:12px;color:var(--muted);margin-top:4px;">Berikut adalah jadwal yang telah dan akan dilaksanakan.</div>
+    <div style="margin-top:14px;display:flex;flex-direction:column;gap:12px;">
+      {% for j in jadwal_list %}
+      <div class="schedule-item">
+        <div style="display:flex;gap:12px;">
+          <div class="date-badge">
+            <div class="month">{{ j.tanggal|date:"M"|upper }}</div>
+            <div class="day">{{ j.tanggal|date:"j" }}</div>
+          </div>
+          <div style="flex:1;min-width:0;">
+            <div style="font-size:15px;font-weight:700;color:var(--ink);line-height:1.3;">{{ j.judul }}</div>
+            <div style="font-size:12px;color:var(--text);margin-top:4px;">{{ j.venue }}</div>
+            <div style="font-size:11px;color:var(--muted);margin-top:2px;">{{ j.tanggal|date:"l, j F Y" }}{% if j.waktu %} Â· {{ j.waktu|time:"H:i" }}{% endif %}</div>
+          </div>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:12px;">
+          <form method="post" style="display:inline;">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="jadwal_id" value="{{ j.pk }}">
+            <button type="submit" style="width:36px;height:36px;border-radius:8px;background:var(--red);border:none;cursor:pointer;color:#fff;display:flex;align-items:center;justify-content:center;"
+              onclick="return confirm('Hapus jadwal ini?')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6 18 21a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+            </button>
+          </form>
+          <button class="btn btn-primary btn-sm" style="flex:1;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            Kirim Notifikasi
+          </button>
+        </div>
+      </div>
+      {% empty %}
+      <div style="font-size:13px;color:var(--muted);padding:16px 0;text-align:center;">Belum ada jadwal. Buat jadwal pertama Anda.</div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
+<!-- Modal buat jadwal -->
+<div id="modal-buat" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:flex-end;justify-content:center;">
+  <div style="background:#fff;border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:430px;">
+    <div style="font-size:18px;font-weight:700;color:var(--ink);margin-bottom:16px;">Buat Jadwal Baru</div>
+    <form method="post">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create">
+      <div class="form-field">
+        <label class="form-label">Nama Kegiatan</label>
+        <input class="form-input" type="text" name="judul" placeholder="cth. Penimbangan & Imunisasi" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Venue</label>
+        <input class="form-input" type="text" name="venue" placeholder="cth. Posyandu Melati 1" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Tanggal</label>
+        <input class="form-input" type="date" name="tanggal" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Waktu (opsional)</label>
+        <input class="form-input" type="time" name="waktu">
+      </div>
+      <div style="display:flex;gap:8px;margin-top:4px;">
+        <button type="button" onclick="document.getElementById('modal-buat').style.display='none'"
+          class="btn btn-secondary btn-md" style="flex:1;">Batal</button>
+        <button type="submit" class="btn btn-primary btn-md" style="flex:1;">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block bottom_nav %}
+<nav class="app-nav">
+  <a href="{% url 'kader:beranda' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2v-9z"/></svg>
+    <span>Beranda</span>
+  </a>
+  <a href="{% url 'kader:daftar_ibu' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    <span>Daftar Ibu</span>
+  </a>
+  <a href="{% url 'kader:monitor' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l3-9 4 18 3-9h4"/></svg>
+    <span>Monitor</span>
+  </a>
+  <a href="{% url 'kader:jadwal' %}" class="nav-item active">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+    <span>Jadwal</span>
+  </a>
+  <a href="{% url 'kader:laporan' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v18h18"/><path d="M7 14l4-4 3 3 5-6"/></svg>
+    <span>Laporan</span>
+  </a>
+</nav>
+{% endblock %}

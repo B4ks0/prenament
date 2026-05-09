@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}{% if mode == 'edit' %}Edit Artikel{% else %}Tulis Artikel{% endif %} - PRENAMENT{% endblock %}
+
+{% block app_header %}
+<div class="back-header">
+  <a href="{% url 'petugas:artikel_list' %}" class="back-btn">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--text)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+  </a>
+  <div style="font-size:15px;font-weight:700;color:var(--ink);flex:1;">
+    {% if mode == 'edit' %}Edit Artikel{% else %}Tulis Artikel Baru{% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div style="padding:16px;">
+  {% if messages %}
+  {% for msg in messages %}
+  <div style="background:var(--red-soft);color:var(--red);padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;">{{ msg }}</div>
+  {% endfor %}
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <div class="card card-p18">
+      <div class="form-field">
+        <label class="form-label">Judul Artikel *</label>
+        <input class="form-input" type="text" name="judul"
+          value="{{ artikel.judul|default:'' }}" placeholder="Tulis judul yang menarik..." required>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Kategori</label>
+        <div class="form-select-wrap">
+          <select class="form-select" name="kategori">
+            {% for val, label in KATEGORI %}
+            <option value="{{ val }}" {% if artikel.kategori == val %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+          <span class="form-select-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </div>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Ringkasan</label>
+        <textarea class="form-input" name="ringkasan" rows="2"
+          placeholder="Deskripsi singkat artikel (tampil di kartu)...">{{ artikel.ringkasan|default:'' }}</textarea>
+      </div>
+
+      <div class="form-field">
+        <label class="form-label">Konten Artikel *</label>
+        <textarea class="form-input" name="konten" rows="10"
+          placeholder="Tulis isi artikel di sini..." required
+          style="min-height:200px;line-height:1.6;">{{ artikel.konten|default:'' }}</textarea>
+      </div>
+
+      <div class="form-field" style="margin-bottom:0;">
+        <label class="form-label">Status</label>
+        <div style="display:flex;gap:12px;">
+          <label class="radio-btn" style="cursor:pointer;">
+            <span class="radio-dot {% if artikel.diterbitkan != False %}checked{% endif %}">
+              <span class="radio-inner" {% if artikel.diterbitkan != False %}{% else %}style="display:none;"{% endif %}></span>
+            </span>
+            <span class="radio-label">Terbitkan</span>
+            <input type="radio" name="diterbitkan" value="1" style="display:none;"
+              {% if artikel.diterbitkan != False %}checked{% endif %}
+              onchange="this.parentElement.querySelector('.radio-dot').classList.add('checked');this.parentElement.querySelector('.radio-inner').style.display='';document.querySelector('[name=diterbitkan][value=0]').parentElement.querySelector('.radio-dot').classList.remove('checked');document.querySelector('[name=diterbitkan][value=0]').parentElement.querySelector('.radio-inner').style.display='none';">
+          </label>
+          <label class="radio-btn" style="cursor:pointer;">
+            <span class="radio-dot {% if artikel.diterbitkan == False %}checked{% endif %}">
+              <span class="radio-inner" {% if artikel.diterbitkan == False %}{% else %}style="display:none;"{% endif %}></span>
+            </span>
+            <span class="radio-label">Simpan sebagai Draft</span>
+            <input type="radio" name="diterbitkan" value="0" style="display:none;"
+              {% if artikel.diterbitkan == False %}checked{% endif %}
+              onchange="this.parentElement.querySelector('.radio-dot').classList.add('checked');this.parentElement.querySelector('.radio-inner').style.display='';document.querySelector('[name=diterbitkan][value=1]').parentElement.querySelector('.radio-dot').classList.remove('checked');document.querySelector('[name=diterbitkan][value=1]').parentElement.querySelector('.radio-inner').style.display='none';">
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:8px;margin-top:14px;">
+      <a href="{% url 'petugas:artikel_list' %}" class="btn btn-secondary btn-lg" style="flex:1;text-align:center;">Batal</a>
+      <button type="submit" class="btn btn-primary btn-lg" style="flex:2;">
+        {% if mode == 'edit' %}Simpan Perubahan{% else %}Terbitkan Artikel{% endif %}
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}

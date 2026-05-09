@@ -1,0 +1,111 @@
+﻿{% extends "base.html" %}
+{% load static %}
+{% block title %}Profil Ibu - PRENAMENT{% endblock %}
+
+{% block header_avatar %}
+<div class="avatar avatar-md" style="background:oklch(0.85 0.06 18);color:oklch(0.35 0.08 18);">
+  {{ request.user.nama_lengkap|default:request.user.username|slice:":2"|upper }}
+</div>
+{% endblock %}
+{% block header_name %}{{ request.user.nama_lengkap|default:request.user.username }}{% endblock %}
+{% block header_role %}Ibu Hamil{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="page-title-info">
+    <h1>Profil Saya</h1>
+    <div class="subtitle">Perbarui informasi pribadi dan kehamilan Anda.</div>
+  </div>
+</div>
+
+<div style="padding:8px 16px 16px;">
+  {% if messages %}
+    {% for msg in messages %}
+    {% if msg.tags == 'error' %}
+    <div class="error-box" style="padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;">
+      {{ msg }}
+    </div>
+    {% else %}
+    <div style="background:var(--green-soft);color:#065f46;padding:10px 12px;border-radius:8px;font-size:13px;margin-bottom:12px;">
+      {{ msg }}
+    </div>
+    {% endif %}
+    {% endfor %}
+  {% endif %}
+
+  <div class="card card-p18">
+    <div style="font-size:18px; font-weight:700; color:var(--ink); margin-bottom:14px;">Informasi Pribadi</div>
+
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-field">
+        <label class="form-label">Nama Lengkap</label>
+        <input class="form-input" type="text" name="nama_lengkap" value="{{ profil.user.nama_lengkap|default:'' }}" placeholder="Nama lengkap">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Usia</label>
+        <input class="form-input" type="number" name="usia" value="{{ profil.usia|default:'' }}" placeholder="Usia (tahun)">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Alamat</label>
+        <input class="form-input" type="text" name="alamat" value="{{ profil.alamat|default:'' }}" placeholder="Alamat lengkap">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Usia Kehamilan (minggu)</label>
+        <input class="form-input" type="number" name="usia_kehamilan" value="{{ profil.usia_kehamilan|default:'' }}" placeholder="Minggu ke-...">
+      </div>
+      <div class="form-field">
+        <label class="form-label">Status Paritas</label>
+        <div class="form-select-wrap">
+          <select class="form-select" name="paritas">
+            <option value="0" {% if profil.paritas == 0 %}selected{% endif %}>Hamil pertama kali (Primigravida)</option>
+            <option value="1" {% if profil.paritas == 1 %}selected{% endif %}>Hamil kedua (Secundigravida)</option>
+            <option value="2" {% if profil.paritas >= 2 %}selected{% endif %}>Hamil ketiga atau lebih (Multigravida)</option>
+          </select>
+          <span class="form-select-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+          </span>
+        </div>
+      </div>
+      <div style="margin-top:8px;">
+        <button type="submit" class="btn btn-primary btn-lg btn-block">Simpan Profil</button>
+      </div>
+    </form>
+  </div>
+
+  <div style="height:14px;"></div>
+
+  <div class="card card-p18">
+    <div style="font-size:16px; font-weight:700; color:var(--ink); margin-bottom:12px;">Akun</div>
+    <a href="{% url 'logout' %}" class="btn btn-secondary btn-md btn-block"
+       style="color:var(--red); border-color:#fecaca;">
+      Keluar
+    </a>
+  </div>
+</div>
+{% endblock %}
+
+{% block bottom_nav %}
+<nav class="app-nav">
+  <a href="{% url 'ibu:beranda' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2v-9z"/></svg>
+    <span>Beranda</span>
+  </a>
+  <a href="{% url 'ibu:skrining' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="m9 13 2 2 4-4"/></svg>
+    <span>Skrining</span>
+  </a>
+  <a href="{% url 'ibu:edukasi' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4V4z"/><path d="M20 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8V4z"/></svg>
+    <span>Edukasi</span>
+  </a>
+  <a href="{% url 'ibu:relaksasi' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2 2 2 4 2"/><path d="M2 12c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2 2 2 4 2"/><path d="M2 18c2 0 2 2 4 2s2-2 4-2 2 2 4 2 2-2 4-2 2 2 4 2"/></svg>
+    <span>Relaksasi</span>
+  </a>
+  <a href="{% url 'ibu:profil' %}" class="nav-item active">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profil</span>
+  </a>
+</nav>
+{% endblock %}

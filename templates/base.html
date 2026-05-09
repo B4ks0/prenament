@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#3b82f6">
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <link rel="icon" type="image/png" href="{% static 'img/icon-192.png' %}">
+  <link rel="stylesheet" href="{% static 'css/prenament.css' %}">
+  <title>{% block title %}PRENAMENT{% endblock %}</title>
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+{% block full_page %}
+<div class="app-shell">
+
+  {# ── Header ── #}
+  {% block app_header %}
+  <div class="app-header">
+    {% block header_avatar %}{% endblock %}
+    <div class="header-info">
+      <div class="header-name">{% block header_name %}PRENAMENT{% endblock %}</div>
+      <div class="header-role">{% block header_role %}{% endblock %}</div>
+    </div>
+    {% block header_action %}{% endblock %}
+  </div>
+  {% endblock %}
+
+  {# ── Scrollable content ── #}
+  <div class="app-content">
+    {% block content %}{% endblock %}
+  </div>
+
+  {# ── Bottom Nav ── #}
+  {% block bottom_nav %}{% endblock %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
