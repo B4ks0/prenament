@@ -37,6 +37,8 @@
 html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
+  height: 100%;
+  overflow: hidden;
 }
 
 body {
@@ -44,8 +46,8 @@ body {
   background: var(--bg);
   color: var(--text);
   line-height: 1.5;
-  min-height: 100vh;
-  overflow-x: hidden;
+  height: 100%;
+  overflow: hidden;
   -webkit-user-select: none;
   user-select: none;
 }
@@ -57,10 +59,12 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 .app-shell {
   max-width: 430px;
   margin: 0 auto;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh; /* mobile: account for browser chrome */
   display: flex;
   flex-direction: column;
   background: var(--bg);
+  overflow: hidden;
 }
 
 .app-header {
@@ -71,6 +75,7 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
   background: #fff;
   border-bottom: 1px solid var(--border);
   flex-shrink: 0;
+  z-index: 10;
 }
 
 .app-header .header-name {
@@ -81,9 +86,33 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
 }
 .app-header .header-info { flex: 1; min-width: 0; }
 
+/* Header profile area — wrapper link di dalam app-header */
+.header-profile-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  pointer-events: none;
+  border-radius: 8px;
+  margin: -4px;
+  padding: 4px;
+}
+.header-profile-area.is-link {
+  pointer-events: auto;
+  cursor: pointer;
+  transition: background .15s;
+}
+.header-profile-area.is-link:active {
+  background: var(--border-soft);
+}
+
 .app-content {
   flex: 1;
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 72px;
 }

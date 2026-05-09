@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+﻿{% extends "base.html" %}
 {% load static %}
 {% block title %}Edukasi - PRENAMENT{% endblock %}
 
@@ -9,6 +9,8 @@
 {% endblock %}
 {% block header_name %}{{ request.user.nama_lengkap|default:request.user.username }}{% endblock %}
 {% block header_role %}Ibu Hamil{% endblock %}
+{% block header_profile_href %}{% url 'ibu:profil' %}{% endblock %}
+{% block header_profile_class %} is-link{% endblock %}
 
 {% block content %}
 <div class="page-title">

@@ -20,11 +20,14 @@
   {# ── Header ── #}
   {% block app_header %}
   <div class="app-header">
-    {% block header_avatar %}{% endblock %}
-    <div class="header-info">
-      <div class="header-name">{% block header_name %}PRENAMENT{% endblock %}</div>
-      <div class="header-role">{% block header_role %}{% endblock %}</div>
-    </div>
+    <a href="{% block header_profile_href %}javascript:void(0){% endblock %}"
+       class="header-profile-area{% block header_profile_class %}{% endblock %}">
+      {% block header_avatar %}{% endblock %}
+      <div class="header-info">
+        <div class="header-name">{% block header_name %}PRENAMENT{% endblock %}</div>
+        <div class="header-role">{% block header_role %}{% endblock %}</div>
+      </div>
+    </a>
     {% block header_action %}{% endblock %}
   </div>
   {% endblock %}
