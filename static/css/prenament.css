@@ -78,13 +78,9 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
   z-index: 10;
 }
 
-.app-header .header-name {
-  font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.2;
-}
-.app-header .header-role {
-  font-size: 12px; color: var(--muted); margin-top: 2px;
-}
-.app-header .header-info { flex: 1; min-width: 0; }
+.header-info { flex: 1; min-width: 0; }
+.header-name { font-size: 14px; font-weight: 600; color: var(--ink); line-height: 1.2; }
+.header-role { font-size: 12px; color: var(--muted); margin-top: 2px; }
 
 /* Header profile area — wrapper link di dalam app-header */
 .header-profile-area {
@@ -93,12 +89,27 @@ svg { fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round
   gap: 12px;
   flex: 1;
   min-width: 0;
-  text-decoration: none;
+  text-decoration: none !important;
   color: inherit;
   pointer-events: none;
   border-radius: 8px;
-  margin: -4px;
-  padding: 4px;
+  outline: none;
+}
+/* Reset semua turunan agar tidak ikut default <a> styling */
+.header-profile-area *,
+.header-profile-area:visited * {
+  text-decoration: none !important;
+}
+.header-profile-area .header-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.2;
+}
+.header-profile-area .header-role {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
 }
 .header-profile-area.is-link {
   pointer-events: auto;
