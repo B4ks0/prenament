@@ -32,6 +32,11 @@
   box-sizing: border-box;
   margin: 0; padding: 0;
   -webkit-tap-highlight-color: transparent;
+  scrollbar-width: none;        /* Firefox */
+  -ms-overflow-style: none;     /* IE / Edge */
+}
+*::-webkit-scrollbar {
+  display: none;                /* Chrome / Safari / Opera */
 }
 
 html {
