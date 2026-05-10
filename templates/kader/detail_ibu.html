@@ -81,7 +81,7 @@
     </div>
     <div class="note-box" style="margin-top:14px;">
       <b style="color:var(--ink);">Skor terbaru:</b>
-      {% if latest %}{{ latest.skor }}/55 â€” {{ latest.get_kategori_risiko_display|default:latest.kategori_risiko }}{% else %}Belum ada skrining{% endif %}
+      {% if latest %}{{ latest.skor }}/55 &mdash; {{ latest.get_kategori_risiko_display|default:latest.kategori_risiko }}{% else %}Belum ada skrining{% endif %}
     </div>
     {% else %}
     <div style="font-size:13px;color:var(--muted);padding:16px 0;text-align:center;">Belum ada riwayat skrining.</div>
