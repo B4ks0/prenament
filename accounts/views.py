@@ -26,6 +26,7 @@ def login_view(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
+            request.session.set_expiry(60 * 60 * 24 * 30)  # 30 hari
             return redirect_by_role(user)
         error = 'Username atau password salah'
     return render(request, 'login.html', {'error': error})

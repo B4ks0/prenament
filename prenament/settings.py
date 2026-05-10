@@ -130,10 +130,12 @@ LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'login'
 
-# Session settings
+# Session settings — persistent login (tetap login meski app ditutup)
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-SESSION_COOKIE_AGE = 86400  # 24 hours
-SESSION_COOKIE_SECURE = False  # Set to True in production
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 30   # 30 hari
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False    # JANGAN hapus cookie saat browser/app ditutup
+SESSION_SAVE_EVERY_REQUEST = True          # Refresh umur session tiap request
+SESSION_COOKIE_SECURE = False              # Set True jika pakai HTTPS
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
