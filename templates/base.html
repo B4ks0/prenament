@@ -29,7 +29,19 @@
         <div class="header-role" style="font-size:12px;color:#64748b;margin-top:2px;">{% block header_role %}{% endblock %}</div>
       </div>
     </a>
-    {% block header_action %}{% endblock %}
+    {% block header_action %}
+    {% if request.user.is_authenticated %}
+    <a href="{% url 'logout' %}" title="Keluar"
+       style="flex-shrink:0;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--muted);transition:background .15s;"
+       onmouseover="this.style.background='var(--border-soft)'" onmouseout="this.style.background='transparent'">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <path d="m16 17 5-5-5-5"/>
+        <path d="M21 12H9"/>
+      </svg>
+    </a>
+    {% endif %}
+    {% endblock %}
   </div>
   {% endblock %}
 
