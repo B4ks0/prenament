@@ -6,6 +6,7 @@ User = get_user_model()
 
 class PetugasProfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='petugas_profil')
+    foto = models.ImageField(upload_to='profil/', blank=True, null=True)
     nip = models.CharField(max_length=50, unique=True, blank=True)
     puskesmas = models.CharField(max_length=255, blank=True)
     jabatan = models.CharField(max_length=255, blank=True)

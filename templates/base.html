@@ -23,7 +23,12 @@
     <a href="{% block header_profile_href %}javascript:void(0){% endblock %}"
        class="header-profile-area{% block header_profile_class %}{% endblock %}"
        style="text-decoration:none;color:inherit;display:flex;align-items:center;gap:12px;flex:1;min-width:0;">
+      {% if user_foto_url %}
+      <img src="{{ user_foto_url }}" alt="Foto profil"
+           style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid var(--border);">
+      {% else %}
       {% block header_avatar %}{% endblock %}
+      {% endif %}
       <div class="header-info" style="flex:1;min-width:0;">
         <div class="header-name" style="font-size:14px;font-weight:600;color:#0f172a;line-height:1.2;">{% block header_name %}PRENAMENT{% endblock %}</div>
         <div class="header-role" style="font-size:12px;color:#64748b;margin-top:2px;">{% block header_role %}{% endblock %}</div>

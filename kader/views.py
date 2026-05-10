@@ -157,10 +157,20 @@ def laporan(request):
 def profil(request):
     kader = _get_kader(request.user)
     if request.method == 'POST':
-        request.user.nama_lengkap = request.POST.get('nama_lengkap', request.user.nama_lengkap)
-        request.user.save()
+        nama = request.POST.get('nama_lengkap', '').strip()
+        if nama:
+            request.user.nama_lengkap = nama
+            request.user.save()
         kader.posyandu = request.POST.get('posyandu', kader.posyandu)
         kader.wilayah = request.POST.get('wilayah', kader.wilayah)
+        if request.POST.get('hapus_foto') == '1':
+            if kader.foto:
+                kader.foto.delete(save=False)
+            kader.foto = None
+        elif request.FILES.get('foto'):
+            if kader.foto:
+                kader.foto.delete(save=False)
+            kader.foto = request.FILES['foto']
         kader.save()
         messages.success(request, 'Profil berhasil disimpan.')
         return redirect('kader:profil')

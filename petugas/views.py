@@ -104,11 +104,21 @@ def statistik(request):
 def profil(request):
     petugas = _get_petugas(request.user)
     if request.method == 'POST':
-        request.user.nama_lengkap = request.POST.get('nama_lengkap', request.user.nama_lengkap)
-        request.user.save()
+        nama = request.POST.get('nama_lengkap', '').strip()
+        if nama:
+            request.user.nama_lengkap = nama
+            request.user.save()
         petugas.nip = request.POST.get('nip', petugas.nip)
         petugas.puskesmas = request.POST.get('puskesmas', petugas.puskesmas)
         petugas.jabatan = request.POST.get('jabatan', petugas.jabatan)
+        if request.POST.get('hapus_foto') == '1':
+            if petugas.foto:
+                petugas.foto.delete(save=False)
+            petugas.foto = None
+        elif request.FILES.get('foto'):
+            if petugas.foto:
+                petugas.foto.delete(save=False)
+            petugas.foto = request.FILES['foto']
         petugas.save()
         messages.success(request, 'Profil berhasil disimpan.')
         return redirect('petugas:profil')

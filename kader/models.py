@@ -7,6 +7,7 @@ User = get_user_model()
 
 class KaderProfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='kader_profil')
+    foto = models.ImageField(upload_to='profil/', blank=True, null=True)
     posyandu = models.CharField(max_length=255, blank=True)
     wilayah = models.CharField(max_length=255, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

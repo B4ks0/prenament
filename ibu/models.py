@@ -36,6 +36,7 @@ class ArtikelEdukasi(models.Model):
 
 class IbuProfil(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='ibu_profil')
+    foto = models.ImageField(upload_to='profil/', blank=True, null=True)
     usia = models.IntegerField(null=True, blank=True)
     alamat = models.TextField(blank=True)
     usia_kehamilan = models.IntegerField(null=True, blank=True, help_text="Dalam minggu")

@@ -60,6 +60,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'notifikasi.context_processors.notifikasi_unread',
+                'accounts.context_processors.user_foto',
             ],
         },
     },

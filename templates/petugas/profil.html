@@ -26,12 +26,52 @@
   {% endfor %}
   {% endif %}
 
+  <!-- Foto Profil -->
+  <div class="card card-p18" style="margin-bottom:12px;">
+    <div style="font-size:16px;font-weight:700;color:var(--ink);margin-bottom:14px;">Foto Profil</div>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:14px;">
+        <div style="flex-shrink:0;">
+          {% if petugas.foto %}
+          <img id="foto-preview" src="{{ petugas.foto.url }}" alt="Foto"
+               style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border);">
+          {% else %}
+          <div id="foto-preview-placeholder" class="avatar" style="width:72px;height:72px;font-size:22px;background:oklch(0.85 0.06 280);color:oklch(0.35 0.08 280);">
+            {{ request.user.nama_lengkap|default:request.user.username|slice:":2"|upper }}
+          </div>
+          <img id="foto-preview" src="" alt="" style="width:72px;height:72px;border-radius:50%;object-fit:cover;border:2px solid var(--border);display:none;">
+          {% endif %}
+        </div>
+        <div style="flex:1;">
+          <label class="btn btn-secondary btn-sm" style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            Pilih Foto
+            <input type="file" name="foto" accept="image/*" style="display:none;" onchange="previewFoto(this)">
+          </label>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">JPG / PNG, maks 5MB</div>
+          {% if petugas.foto %}
+          <label style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--red);margin-top:8px;cursor:pointer;">
+            <input type="checkbox" name="hapus_foto" value="1"> Hapus foto
+          </label>
+          {% endif %}
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-sm btn-block">Simpan Foto</button>
+    </form>
+  </div>
+
   <div class="card card-p18">
     <!-- Avatar + name -->
     <div style="display:flex;align-items:center;gap:14px;margin-bottom:16px;">
+      {% if petugas.foto %}
+      <img src="{{ petugas.foto.url }}" alt="Foto"
+           style="width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border);flex-shrink:0;">
+      {% else %}
       <div class="avatar avatar-xl" style="background:oklch(0.85 0.06 280);color:oklch(0.35 0.08 280);">
         {{ request.user.nama_lengkap|default:request.user.username|slice:":2"|upper }}
       </div>
+      {% endif %}
       <div>
         <div style="font-size:17px;font-weight:700;color:var(--ink);">{{ request.user.nama_lengkap|default:request.user.username }}</div>
         <div style="font-size:12px;color:var(--muted);">{{ petugas.jabatan|default:"Petugas Puskesmas" }}</div>
@@ -69,7 +109,21 @@
 </div>
 {% endblock %}
 
-{% block bottom_nav %}
+<script>
+function previewFoto(input) {
+  const file = input.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = document.getElementById('foto-preview');
+    const placeholder = document.getElementById('foto-preview-placeholder');
+    img.src = e.target.result;
+    img.style.display = 'block';
+    if (placeholder) placeholder.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+}
+</script>{% block bottom_nav %}
 <nav class="app-nav">
   <a href="{% url 'petugas:beranda' %}" class="nav-item">
     <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2v-9z"/></svg>

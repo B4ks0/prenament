@@ -176,6 +176,14 @@ def profil(request):
         paritas = request.POST.get('paritas', '').strip()
         if paritas.isdigit():
             profil.paritas = int(paritas)
+        if request.POST.get('hapus_foto') == '1':
+            if profil.foto:
+                profil.foto.delete(save=False)
+            profil.foto = None
+        elif request.FILES.get('foto'):
+            if profil.foto:
+                profil.foto.delete(save=False)
+            profil.foto = request.FILES['foto']
         profil.save()
         messages.success(request, 'Profil berhasil disimpan.')
         return redirect('ibu:profil')
