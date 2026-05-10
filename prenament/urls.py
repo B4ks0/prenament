@@ -18,6 +18,7 @@ urlpatterns = [
     path('ibu/', include('ibu.urls', namespace='ibu')),
     path('kader/', include('kader.urls', namespace='kader')),
     path('petugas/', include('petugas.urls', namespace='petugas')),
+    path('notifikasi/', include('notifikasi.urls', namespace='notifikasi')),
 ]
 
 if settings.DEBUG:

@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     'ibu',
     'kader',
     'petugas',
+    'notifikasi',
 ]
 
 MIDDLEWARE = [
@@ -58,6 +59,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'notifikasi.context_processors.notifikasi_unread',
             ],
         },
     },

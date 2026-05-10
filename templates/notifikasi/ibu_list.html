@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Notifikasi - PRENAMENT{% endblock %}
+
+{% block header_avatar %}
+<div class="avatar avatar-md" style="background:oklch(0.85 0.06 18);color:oklch(0.35 0.08 18);">
+  {{ request.user.nama_lengkap|default:request.user.username|slice:":2"|upper }}
+</div>
+{% endblock %}
+{% block header_name %}{{ request.user.nama_lengkap|default:request.user.username }}{% endblock %}
+{% block header_role %}Ibu Hamil{% endblock %}
+{% block header_profile_href %}{% url 'ibu:profil' %}{% endblock %}
+{% block header_profile_class %} is-link{% endblock %}
+
+{% block content %}
+<div class="page-title">
+  <div class="page-title-info">
+    <h1>Notifikasi</h1>
+    <div class="subtitle">Pesan dan pengingat dari kader atau sistem.</div>
+  </div>
+</div>
+
+<div style="padding:0 16px 16px;">
+  {% if notifs %}
+  <div style="display:flex;flex-direction:column;gap:10px;">
+    {% for n in notifs %}
+    <div class="card" style="padding:14px 16px;border-left:3px solid
+      {% if n.tipe == 'reminder' %}var(--amber)
+      {% elif n.tipe == 'jadwal' %}var(--blue)
+      {% elif n.tipe == 'pesan' %}var(--green)
+      {% else %}var(--muted-light){% endif %};">
+      <div style="display:flex;align-items:flex-start;gap:10px;">
+        <!-- Ikon tipe -->
+        <div style="flex-shrink:0;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+          background:{% if n.tipe == 'reminder' %}var(--amber-soft){% elif n.tipe == 'jadwal' %}var(--blue-soft){% elif n.tipe == 'pesan' %}var(--green-soft){% else %}var(--bg-soft){% endif %};">
+          {% if n.tipe == 'reminder' %}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          {% elif n.tipe == 'jadwal' %}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          {% elif n.tipe == 'pesan' %}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+          {% else %}
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          {% endif %}
+        </div>
+        <div style="flex:1;min-width:0;">
+          <div style="font-size:14px;font-weight:700;color:var(--ink);line-height:1.3;">{{ n.judul }}</div>
+          <div style="font-size:13px;color:var(--text);margin-top:4px;line-height:1.55;">{{ n.pesan }}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            {% if n.pengirim %}
+            <span style="font-size:11px;color:var(--muted);">
+              dari {{ n.pengirim.nama_lengkap|default:n.pengirim.username }}
+            </span>
+            <span style="color:var(--border);">·</span>
+            {% endif %}
+            <span style="font-size:11px;color:var(--muted-light);">{{ n.created_at|timesince }} lalu</span>
+          </div>
+        </div>
+      </div>
+      {% if n.tipe == 'reminder' %}
+      <a href="{% url 'ibu:skrining' %}" class="btn btn-primary btn-sm" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="m9 13 2 2 4-4"/></svg>
+        Mulai Skrining Sekarang
+      </a>
+      {% elif n.tipe == 'jadwal' %}
+      <a href="{% url 'ibu:beranda' %}" class="btn btn-secondary btn-sm" style="margin-top:12px;display:inline-flex;align-items:center;gap:6px;">
+        Lihat Jadwal
+      </a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div style="text-align:center;padding:60px 20px;">
+    <div style="width:64px;height:64px;background:var(--bg-soft);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--muted-light)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    </div>
+    <div style="font-size:15px;font-weight:700;color:var(--ink);margin-bottom:6px;">Tidak Ada Notifikasi</div>
+    <div style="font-size:13px;color:var(--muted);">Notifikasi dari kader atau sistem akan muncul di sini.</div>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+{% block bottom_nav %}
+<nav class="app-nav">
+  <a href="{% url 'ibu:beranda' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-7h-6v7H5a2 2 0 0 1-2-2v-9z"/></svg>
+    <span>Beranda</span>
+  </a>
+  <a href="{% url 'ibu:skrining' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="4" width="12" height="17" rx="2"/><path d="M9 4V3a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v1"/><path d="m9 13 2 2 4-4"/></svg>
+    <span>Skrining</span>
+  </a>
+  <a href="{% url 'ibu:edukasi' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7a3 3 0 0 1 3 3v13a2 2 0 0 0-2-2H4V4z"/><path d="M20 4h-7a3 3 0 0 0-3 3v13a2 2 0 0 1 2-2h8V4z"/></svg>
+    <span>Edukasi</span>
+  </a>
+  <a href="{% url 'notifikasi:ibu_list' %}" class="nav-item active" style="position:relative;">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+    <span>Notifikasi</span>
+  </a>
+  <a href="{% url 'ibu:profil' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profil</span>
+  </a>
+</nav>
+{% endblock %}
