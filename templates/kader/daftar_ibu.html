@@ -26,9 +26,13 @@
     <div style="margin-top:12px;">
       {% for profil in ibu_list %}
       <a href="{% url 'kader:detail_ibu' profil.pk %}" class="row-divider" style="text-decoration:none;cursor:pointer;">
+        {% if profil.foto %}
+        <img src="{{ profil.foto.url }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">
+        {% else %}
         <div class="avatar avatar-md" style="background:oklch(0.85 0.06 18);color:oklch(0.35 0.08 18);">
           {{ profil.user.nama_lengkap|default:profil.user.username|slice:":2"|upper }}
         </div>
+        {% endif %}
         <div style="flex:1;">
           <div style="font-size:15px;font-weight:700;color:var(--ink);">{{ profil.user.nama_lengkap|default:profil.user.username }}</div>
           <div style="font-size:12px;color:var(--muted);margin-top:2px;">
