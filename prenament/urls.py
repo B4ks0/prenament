@@ -20,6 +20,7 @@ urlpatterns = [
     path('kader/', include('kader.urls', namespace='kader')),
     path('petugas/', include('petugas.urls', namespace='petugas')),
     path('notifikasi/', include('notifikasi.urls', namespace='notifikasi')),
+    path('chat/', include('chat.urls', namespace='chat')),
 ]
 
 if settings.DEBUG:

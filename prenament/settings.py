@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'kader',
     'petugas',
     'notifikasi',
+    'chat',
 ]
 
 MIDDLEWARE = [
@@ -61,6 +62,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'notifikasi.context_processors.notifikasi_unread',
                 'accounts.context_processors.user_foto',
+                'accounts.context_processors.chat_unread',
             ],
         },
     },
