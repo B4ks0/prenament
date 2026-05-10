@@ -139,9 +139,9 @@ document.querySelectorAll('[data-height]').forEach(el => {
     {% if notifikasi_unread %}<span style="position:absolute;top:2px;right:14px;min-width:16px;height:16px;background:var(--red);color:#fff;border-radius:999px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;line-height:1;">{{ notifikasi_unread }}</span>{% endif %}
     <span>Notifikasi</span>
   </a>
-  <a href="{% url 'ibu:siaga' %}" class="nav-item">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 1 22h22L12 2z"/><path d="M12 9v5"/><path d="M12 17.5h.01"/></svg>
-    <span>Siaga</span>
+  <a href="{% url 'ibu:profil' %}" class="nav-item">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    <span>Profil</span>
   </a>
 </nav>
 {% endblock %}
