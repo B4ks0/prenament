@@ -47,13 +47,16 @@
     <a href="{% url 'kader:detail_ibu' d.profil.pk %}" style="text-decoration:none; display:block;">
       <div style="padding:14px 0; border-top:{% if not forloop.first %}1px solid var(--border-soft){% else %}none{% endif %};">
         <div style="display:flex;align-items:center;gap:12px;">
-          {% if d.profil.foto %}
-          <img src="{{ d.profil.foto.url }}" alt="" style="width:40px;height:40px;border-radius:50%;object-fit:cover;flex-shrink:0;">
-          {% else %}
-          <div class="avatar avatar-md" style="background:oklch(0.85 0.06 18);color:oklch(0.35 0.08 18);">
-            {{ d.profil.user.nama_lengkap|default:d.profil.user.username|slice:":2"|upper }}
+          <div style="position:relative;flex-shrink:0;width:40px;height:40px;">
+            <div class="avatar avatar-md" style="background:oklch(0.85 0.06 18);color:oklch(0.35 0.08 18);">
+              {{ d.profil.user.nama_lengkap|default:d.profil.user.username|slice:":2"|upper }}
+            </div>
+            {% if d.profil.foto %}
+            <img src="{{ d.profil.foto.url }}" alt=""
+                 style="position:absolute;inset:0;width:100%;height:100%;border-radius:50%;object-fit:cover;"
+                 onerror="this.style.display='none'">
+            {% endif %}
           </div>
-          {% endif %}
           <div style="flex:1;min-width:0;">
             <div style="display:flex;align-items:center;gap:6px;">
               <div style="font-size:14px;font-weight:700;color:var(--ink);">{{ d.profil.user.nama_lengkap|default:d.profil.user.username }}</div>
