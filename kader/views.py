@@ -89,6 +89,65 @@ def detail_ibu(request, pk):
     })
 
 @role_required('kader')
+def kirim_pesan_ibu(request, pk):
+    kader = _get_kader(request.user)
+    profil = get_object_or_404(IbuProfil, pk=pk, kader=kader)
+    if request.method == 'POST':
+        from notifikasi.models import Notifikasi
+        judul = request.POST.get('judul', '').strip()
+        pesan = request.POST.get('pesan', '').strip()
+        tipe  = request.POST.get('tipe', 'pesan')
+        if judul and pesan:
+            Notifikasi.objects.create(
+                penerima=profil.user,
+                pengirim=request.user,
+                judul=judul, pesan=pesan, tipe=tipe,
+            )
+            messages.success(request, f'Pesan terkirim ke {profil.user.nama_lengkap}.')
+        else:
+            messages.error(request, 'Judul dan pesan wajib diisi.')
+    return redirect('kader:detail_ibu', pk=pk)
+
+
+@role_required('kader')
+def rujuk_puskesmas(request, pk):
+    kader = _get_kader(request.user)
+    profil = get_object_or_404(IbuProfil, pk=pk, kader=kader)
+    if request.method == 'POST':
+        from notifikasi.models import Notifikasi
+        from accounts.models import CustomUser
+        catatan = request.POST.get('catatan', '').strip()
+        petugas_list = CustomUser.objects.filter(role='petugas')
+        for petugas in petugas_list:
+            Notifikasi.objects.create(
+                penerima=petugas,
+                pengirim=request.user,
+                judul=f'Rujukan: {profil.user.nama_lengkap}',
+                pesan=(
+                    f'Kader {request.user.nama_lengkap} merujuk ibu hamil '
+                    f'{profil.user.nama_lengkap} (skor {profil.get_skor_terakhir()}/55, '
+                    f'{profil.get_kategori_risiko()}) ke Puskesmas.'
+                    + (f'\n\nCatatan: {catatan}' if catatan else '')
+                ),
+                tipe='sistem',
+            )
+        # Beri tahu ibu juga
+        Notifikasi.objects.create(
+            penerima=profil.user,
+            pengirim=request.user,
+            judul='Anda Dirujuk ke Puskesmas',
+            pesan=(
+                f'Kader {request.user.nama_lengkap} telah merujuk Anda ke Puskesmas '
+                f'untuk mendapatkan konseling psikolog.'
+                + (f'\n\nCatatan: {catatan}' if catatan else '')
+            ),
+            tipe='sistem',
+        )
+        messages.success(request, 'Rujukan berhasil dikirim ke Puskesmas.')
+    return redirect('kader:detail_ibu', pk=pk)
+
+
+@role_required('kader')
 def jadwal(request):
     kader = _get_kader(request.user)
     if request.method == 'POST':

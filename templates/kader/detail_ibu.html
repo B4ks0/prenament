@@ -89,25 +89,153 @@
   </div>
 </div>
 
+<!-- Messages -->
+{% if messages %}
+<div style="padding:0 16px 8px;">
+  {% for msg in messages %}
+  <div style="padding:10px 14px;border-radius:10px;font-size:13px;font-weight:600;
+    background:{% if 'error' in msg.tags %}var(--red-soft);color:var(--red){% else %}var(--green-soft);color:#065f46{% endif %};">
+    {{ msg }}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
 <!-- Actions -->
 <div style="padding:0 16px 24px;display:flex;flex-direction:column;gap:8px;">
-  <button class="btn btn-primary btn-lg btn-block">
+  <button onclick="openModal('modal-pesan')" class="btn btn-primary btn-lg btn-block">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
     Kirim Pesan
   </button>
-  <button class="btn btn-secondary btn-lg btn-block">
+  <button onclick="openModal('modal-jadwal')" class="btn btn-secondary btn-lg btn-block">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
     Jadwalkan Kunjungan
   </button>
-  <button class="btn btn-secondary btn-lg btn-block" style="color:var(--red);border-color:#fecaca;">
+  <button onclick="openModal('modal-rujuk')" class="btn btn-secondary btn-lg btn-block" style="color:var(--red);border-color:#fecaca;">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 1 22h22L12 2z"/><path d="M12 9v5"/><path d="M12 17.5h.01"/></svg>
     Rujuk ke Puskesmas
   </button>
+</div>
+
+<!-- ── Modal: Kirim Pesan ── -->
+<div id="modal-pesan" class="bottom-sheet-overlay" onclick="if(event.target===this)closeModal('modal-pesan')">
+  <div class="bottom-sheet">
+    <div class="bottom-sheet-handle"></div>
+    <div style="padding:0 20px 8px;font-size:17px;font-weight:700;color:var(--ink);">
+      Kirim Pesan ke {{ profil.user.nama_lengkap|default:profil.user.username }}
+    </div>
+    <form method="post" action="{% url 'kader:kirim_pesan_ibu' profil.pk %}" style="padding:0 20px 28px;">
+      {% csrf_token %}
+      <div class="form-field">
+        <label class="form-label">Jenis Pesan</label>
+        <div class="form-select-wrap">
+          <select class="form-select" name="tipe">
+            <option value="pesan">Pesan Biasa</option>
+            <option value="reminder">Reminder Skrining</option>
+            <option value="jadwal">Info Jadwal</option>
+          </select>
+          <span class="form-select-arrow"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg></span>
+        </div>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Judul *</label>
+        <input class="form-input" type="text" name="judul" placeholder="cth. Jangan lupa skrining minggu ini" required>
+      </div>
+      <div class="form-field" style="margin-bottom:16px;">
+        <label class="form-label">Pesan *</label>
+        <textarea class="form-input" name="pesan" rows="3" placeholder="Tulis pesan..." required style="resize:none;"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="button" onclick="closeModal('modal-pesan')" class="btn btn-secondary btn-lg" style="flex:1;">Batal</button>
+        <button type="submit" class="btn btn-primary btn-lg" style="flex:2;">Kirim Pesan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal: Jadwalkan Kunjungan ── -->
+<div id="modal-jadwal" class="bottom-sheet-overlay" onclick="if(event.target===this)closeModal('modal-jadwal')">
+  <div class="bottom-sheet">
+    <div class="bottom-sheet-handle"></div>
+    <div style="padding:0 20px 8px;font-size:17px;font-weight:700;color:var(--ink);">Jadwalkan Kunjungan</div>
+    <form method="post" action="{% url 'kader:jadwal' %}" style="padding:0 20px 28px;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="create">
+      <div class="form-field">
+        <label class="form-label">Judul Kegiatan</label>
+        <input class="form-input" type="text" name="judul"
+          value="Kunjungan ke {{ profil.user.nama_lengkap|default:profil.user.username }}" required>
+      </div>
+      <div class="form-field">
+        <label class="form-label">Lokasi</label>
+        <input class="form-input" type="text" name="venue"
+          value="{{ profil.alamat|default:kader.posyandu }}" placeholder="Alamat kunjungan">
+      </div>
+      <div style="display:flex;gap:10px;">
+        <div class="form-field" style="flex:1;margin-bottom:0;">
+          <label class="form-label">Tanggal *</label>
+          <input class="form-input" type="date" name="tanggal" required>
+        </div>
+        <div class="form-field" style="flex:1;margin-bottom:0;">
+          <label class="form-label">Waktu</label>
+          <input class="form-input" type="time" name="waktu" value="09:00">
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;">
+        <button type="button" onclick="closeModal('modal-jadwal')" class="btn btn-secondary btn-lg" style="flex:1;">Batal</button>
+        <button type="submit" class="btn btn-primary btn-lg" style="flex:2;">Jadwalkan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Modal: Rujuk ke Puskesmas ── -->
+<div id="modal-rujuk" class="bottom-sheet-overlay" onclick="if(event.target===this)closeModal('modal-rujuk')">
+  <div class="bottom-sheet">
+    <div class="bottom-sheet-handle"></div>
+    <div style="padding:0 20px 4px;">
+      <div style="font-size:17px;font-weight:700;color:var(--ink);">Rujuk ke Puskesmas</div>
+      <div style="font-size:13px;color:var(--muted);margin-top:4px;">
+        Notifikasi akan dikirim ke semua Petugas Puskesmas dan ke ibu yang bersangkutan.
+      </div>
+    </div>
+    <div style="margin:12px 20px;padding:12px;background:var(--red-soft);border-radius:10px;display:flex;gap:10px;align-items:flex-start;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--red)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;margin-top:1px;"><path d="M12 2 1 22h22L12 2z"/><path d="M12 9v5"/><path d="M12 17.5h.01"/></svg>
+      <div style="font-size:13px;color:var(--red);">
+        <b>{{ profil.user.nama_lengkap|default:profil.user.username }}</b> &mdash;
+        Skor {{ profil.get_skor_terakhir }}/55, {{ profil.get_kategori_risiko }}
+      </div>
+    </div>
+    <form method="post" action="{% url 'kader:rujuk_puskesmas' profil.pk %}" style="padding:0 20px 28px;">
+      {% csrf_token %}
+      <div class="form-field" style="margin-bottom:16px;">
+        <label class="form-label">Catatan untuk Petugas (opsional)</label>
+        <textarea class="form-input" name="catatan" rows="3"
+          placeholder="cth. Ibu mengeluh sulit tidur dan cemas berlebihan..." style="resize:none;"></textarea>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button type="button" onclick="closeModal('modal-rujuk')" class="btn btn-secondary btn-lg" style="flex:1;">Batal</button>
+        <button type="submit" class="btn btn-lg" style="flex:2;background:var(--red);color:#fff;border:none;border-radius:12px;font-weight:700;cursor:pointer;">
+          Kirim Rujukan
+        </button>
+      </div>
+    </form>
+  </div>
 </div>
 
 <script>
 document.querySelectorAll('[data-h]').forEach(el => {
   el.style.height = (parseInt(el.dataset.h) / 55 * 100) + '%';
 });
+function openModal(id) {
+  const el = document.getElementById(id);
+  el.style.display = 'flex';
+  requestAnimationFrame(() => el.querySelector('.bottom-sheet').style.transform = 'translateY(0)');
+}
+function closeModal(id) {
+  const sheet = document.getElementById(id).querySelector('.bottom-sheet');
+  sheet.style.transform = 'translateY(100%)';
+  setTimeout(() => document.getElementById(id).style.display = 'none', 280);
+}
 </script>
 {% endblock %}
