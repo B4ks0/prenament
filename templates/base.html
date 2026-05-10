@@ -8,7 +8,7 @@
   <meta name="theme-color" content="#3b82f6">
   <link rel="manifest" href="{% static 'manifest.json' %}">
   <link rel="icon" type="image/png" href="{% static 'img/icon-192.png' %}">
-  <link rel="stylesheet" href="{% static 'css/prenament.css' %}?v=2">
+  <link rel="stylesheet" href="{% static 'css/prenament.css' %}?v=3">
   <title>{% block title %}PRENAMENT{% endblock %}</title>
   {% block extra_css %}{% endblock %}
 </head>
@@ -31,16 +31,15 @@
     </a>
     {% block header_action %}
     {% if request.user.is_authenticated %}
-    <a href="{% url 'logout' %}" title="Keluar"
-       onclick="return confirm('Yakin ingin keluar?')"
-       style="flex-shrink:0;width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--muted);transition:background .15s;"
+    <button onclick="showLogoutDialog()" title="Keluar"
+       style="flex-shrink:0;width:36px;height:36px;border-radius:8px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--muted);transition:background .15s;"
        onmouseover="this.style.background='var(--border-soft)'" onmouseout="this.style.background='transparent'">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
         <path d="m16 17 5-5-5-5"/>
         <path d="M21 12H9"/>
       </svg>
-    </a>
+    </button>
     {% endif %}
     {% endblock %}
   </div>
@@ -55,6 +54,71 @@
   {% block bottom_nav %}{% endblock %}
 
 </div>
+
+{# ── Logout Dialog (Android Material style) ── #}
+{% if request.user.is_authenticated %}
+<div id="logout-overlay"
+     style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:999;align-items:center;justify-content:center;padding:24px;"
+     onclick="if(event.target===this)hideLogoutDialog()">
+  <div id="logout-dialog"
+       style="background:#fff;border-radius:20px;width:100%;max-width:320px;overflow:hidden;
+              transform:scale(.92);opacity:0;transition:transform .22s cubic-bezier(.34,1.56,.64,1),opacity .18s ease;">
+
+    <!-- Ikon -->
+    <div style="padding:28px 24px 0;text-align:center;">
+      <div style="width:56px;height:56px;border-radius:50%;background:#fee2e2;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+          <path d="m16 17 5-5-5-5"/>
+          <path d="M21 12H9"/>
+        </svg>
+      </div>
+      <div style="font-size:17px;font-weight:700;color:#0f172a;margin-bottom:8px;">Keluar dari Akun</div>
+      <div style="font-size:14px;color:#64748b;line-height:1.55;">Yakin ingin keluar? Anda perlu login kembali untuk menggunakan aplikasi.</div>
+    </div>
+
+    <!-- Tombol -->
+    <div style="display:flex;gap:10px;padding:20px 20px 24px;">
+      <button onclick="hideLogoutDialog()"
+        style="flex:1;height:44px;border-radius:12px;border:1.5px solid #e5e7eb;background:#fff;
+               font-size:14px;font-weight:600;color:#64748b;cursor:pointer;font-family:inherit;
+               transition:background .15s;"
+        onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background='#fff'">
+        Batal
+      </button>
+      <a href="{% url 'logout' %}"
+        style="flex:1;height:44px;border-radius:12px;background:#ef4444;border:none;
+               font-size:14px;font-weight:700;color:#fff;cursor:pointer;font-family:inherit;
+               display:flex;align-items:center;justify-content:center;text-decoration:none;
+               transition:background .15s;"
+        onmouseover="this.style.background='#dc2626'" onmouseout="this.style.background='#ef4444'">
+        Keluar
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+function showLogoutDialog() {
+  const overlay = document.getElementById('logout-overlay');
+  const dialog  = document.getElementById('logout-dialog');
+  overlay.style.display = 'flex';
+  requestAnimationFrame(() => {
+    dialog.style.transform = 'scale(1)';
+    dialog.style.opacity   = '1';
+  });
+}
+function hideLogoutDialog() {
+  const overlay = document.getElementById('logout-overlay');
+  const dialog  = document.getElementById('logout-dialog');
+  dialog.style.transform = 'scale(.92)';
+  dialog.style.opacity   = '0';
+  setTimeout(() => { overlay.style.display = 'none'; }, 200);
+}
+</script>
+{% endif %}
+
 {% endblock %}
 
 {% block extra_js %}{% endblock %}
