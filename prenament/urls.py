@@ -13,6 +13,7 @@ urlpatterns = [
     # Auth URLs
     path('', account_views.login_view, name='login'),
     path('logout/', account_views.logout_view, name='logout'),
+    path('ganti-password/', account_views.ganti_password, name='ganti_password'),
     
     # App URLs
     path('ibu/', include('ibu.urls', namespace='ibu')),
